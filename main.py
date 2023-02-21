@@ -69,7 +69,7 @@ print(weekLinks)
 #     with open("testfile.csv", "a", newline="") as f:
 #         table_to_csv = csv.writer(f)
 #         for row in allRows:
-#             row_data = []
+#             row_data = []s
 #             for cell in row.findAll(["td", "th"]):
 #                 row_data.append(cell.get_text())
 #             table_to_csv.writerow(row_data)
@@ -78,8 +78,8 @@ print(weekLinks)
 with open("testfile.csv", "w", newline="") as f:
     # Create the csv and make the header
     table_to_csv = csv.writer(f)
-    header = ["Player", "PID", "Pos", "Week", "Tm", "Cmp", "Att", "Yds", "TD", "Int", "Sk", "Yds", "Lng", "Rate", "Att",
-              "Yds", "TD", "Lng", "Tgt", "Rec", "Yds", "TD", "Lng", "Fmb", "FL", "Snap", "Snap%"]
+    header = ["Player", "PID", "Pos", "Week", "Tm", "Cmp", "Att", "PassYds", "PassTD", "Int", "Sacked", "YardsLostSack", "PassLng", "Rate", "Att",
+              "RushYards", "RushTD", "RushLng", "Tgt", "Rec", "RecYds", "RecTD", "RecLng", "Fmb", "FL", "Snap", "Snap%"]
     table_to_csv.writerow(header)
 
     #for week in range(1, len(weekLinks)):
