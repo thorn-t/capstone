@@ -78,7 +78,7 @@ print(weekLinks)
 with open("testfile.csv", "w", newline="") as f:
     # Create the csv and make the header
     table_to_csv = csv.writer(f)
-    header = ["Player", "PID", "Pos", "Week", "Tm", "Cmp", "Att", "PassYds", "PassTD", "Int", "Sacked", "YardsLostSack", "PassLng", "Rate", "Att",
+    header = ["Player", "PID", "Pos", "Week", "Tm", "Cmp", "PassAtt", "PassYds", "PassTD", "Int", "Sacked", "YardsLostSack", "PassLng", "Rate", "RushAtt",
               "RushYards", "RushTD", "RushLng", "Tgt", "Rec", "RecYds", "RecTD", "RecLng", "Fmb", "FL", "Snap", "Snap%"]
     table_to_csv.writerow(header)
 
