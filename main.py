@@ -12,6 +12,21 @@ import requests
 from webdriver_manager.chrome import ChromeDriverManager
 
 
+def getTeams(theSoup):
+    teamList = set()
+    # Find the <div> element with id "div_player_offense" and get the <tbody> tag inside it
+    player_offense_div = theSoup.find("div", {"id": "div_player_offense"})
+    tbody = player_offense_div.find("tbody")
+
+    # Find all <tr> tags in the <tbody> tag and get the team names from the "tm" column
+    for tr in tbody.find_all("tr"):
+        td = tr.find("td", {"data-stat": "team"})
+        if td is not None:
+            teamList.add(td.text.strip())
+    teamList = list(teamList)
+
+    return teamList
+
 chrome_driver_path = "D:\ChromeDriver\chromedriver.exe"
 
 options = webdriver.ChromeOptions
@@ -78,7 +93,7 @@ print(weekLinks)
 with open("testfile.csv", "w", newline="") as f:
     # Create the csv and make the header
     table_to_csv = csv.writer(f)
-    header = ["Player", "PID", "Pos", "Week", "Tm", "Cmp", "PassAtt", "PassYds", "PassTD", "Int", "Sacked", "YardsLostSack", "PassLng", "Rate", "RushAtt",
+    header = ["Player", "PID", "Pos", "Week", "Tm", "Opp", "Cmp", "PassAtt", "PassYds", "PassTD", "Int", "Sacked", "YardsLostSack", "PassLng", "Rate", "RushAtt",
               "RushYards", "RushTD", "RushLng", "Tgt", "Rec", "RecYds", "RecTD", "RecLng", "Fmb", "FL", "Snap", "Snap%"]
     table_to_csv.writerow(header)
 
@@ -154,10 +169,9 @@ with open("testfile.csv", "w", newline="") as f:
             # for row in offensiveSnapCounts:
             #     print("Name: ", row[0], "Pos: ", row[1])
 
-            # SOMEHOW GRAB THE TWO TEAMS HERE
+            # Get the two teams into the teams list
             teams = []
-            # while len(teams) < 2:
-            #     allRows
+            teams = getTeams(soup)
 
             # Create the CSV appending player IDs, snap counts, opposing team, and player stats
             for row in allRows:
@@ -209,6 +223,18 @@ with open("testfile.csv", "w", newline="") as f:
                         row_data.append(offensiveSnapCounts[q][2])
                         # Append the snap % to the end of the players row
                         row_data.append(offensiveSnapCounts[q][3])
+
+                # Insert the opposing team name into the array row_data[4] contains the players team, teams contains both teams
+                # this inserts the opposing team into the array.
+                if row_data[4] == teams[0]:
+                    row_data.insert(5, teams[1])
+                else:
+                    row_data.insert(5, teams[0])
+
+                # Checks to see if the 4th item in the array is not an int. This is to keep punters out of the data set
+                # because during the scraping they were sneaking in from the offense table and missing rows.
+                if type(row_data[3]) != int:
+                    continue
 
                 #print(row_data)
                 table_to_csv.writerow(row_data)
