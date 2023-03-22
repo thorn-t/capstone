@@ -7,9 +7,16 @@
 <body>
     <h1>All Players</h1>
     <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('getAllPlayers') }}">All players</a>
+    <a href="{{ url_for('getAdminPage') }}">Admin</a>
     <br>
     <br>
     <!--  dfHtml is the dataframe in html form.  -->
     {{dfHtml}}
+    {% if dfHtml %}
+        <p>WE IFd</p>
+    {% else %}
+        <p>WE ELSEd</p>
+    {% endif %}
 </body>
 </html>
