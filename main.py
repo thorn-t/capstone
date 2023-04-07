@@ -12,8 +12,49 @@ import requests
 from webdriver_manager.chrome import ChromeDriverManager
 
 
+
+
+
+
+chrome_driver_path = "D:\ChromeDriver\chromedriver.exe"
+
+options = webdriver.ChromeOptions
+service = Service(executable_path=chrome_driver_path)
+driver = webdriver.Chrome(service=service)
+#driver = webdriver.Chrome(ChromeDriverManager().install())
+
+def getWeekLinks():
+    # Navigate to score page
+    # driver.get("file:///D:/PycharmProjects/NFLScraper/2022%20NFL%20Week%2019%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
+    driver.get(
+        "file:///D:/PycharmProjects/NFLScraper/2022%20NFL%20Week%2018%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
+    # driver.get("file:///D:/PycharmProjects/NFLScraper/Wild%20Card%20-%20Seattle%20Seahawks%20at%20San%20Francisco%2049ers"
+    #            "%20-%20January%2014th,%202023%20_%20Pro-Football-Reference.com.html")
+
+    # Get all week links into a list weekLinks. List starts at index 1 to match week 1 link
+    a = driver.page_source
+    soup = BeautifulSoup(a, "html.parser")
+    # Get all html within this id into weekLinks
+    weekLinks = soup.findAll(id="div_week_games")[0]
+    # Get all anchor tags into weekLinks
+    weekLinks = weekLinks.findAll("a")
+    # Change from anchor tags to actual links in weekLinks
+    for i in range(len(weekLinks)):
+        weekLinks[i] = weekLinks[i].get("href")
+    # Insert a "" at index 0 so that index 1 will match week 1
+    weekLinks.insert(0, "")
+    for i in range(1, len(weekLinks)):
+        print(i, ": ", weekLinks[i])
+    print(weekLinks)
+
+
+    return weekLinks
+
+
 def getTeams(theSoup):
+    # The teamList set holds the two teams who played, a set is used because there are going to be unneeded duplicates
     teamList = set()
+
     # Find the <div> element with id "div_player_offense" and get the <tbody> tag inside it
     player_offense_div = theSoup.find("div", {"id": "div_player_offense"})
     tbody = player_offense_div.find("tbody")
@@ -23,38 +64,15 @@ def getTeams(theSoup):
         td = tr.find("td", {"data-stat": "team"})
         if td is not None:
             teamList.add(td.text.strip())
+
+    # Convert the set back to a list so that everything back in the main code is using a list.
     teamList = list(teamList)
 
     return teamList
 
-chrome_driver_path = "D:\ChromeDriver\chromedriver.exe"
 
-options = webdriver.ChromeOptions
-service = Service(executable_path=chrome_driver_path)
-driver = webdriver.Chrome(service=service)
-#driver = webdriver.Chrome(ChromeDriverManager().install())
+weekLinks = getWeekLinks()
 
-# Navigate to score page
-#driver.get("file:///D:/PycharmProjects/NFLScraper/2022%20NFL%20Week%2019%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
-driver.get("file:///D:/PycharmProjects/NFLScraper/2022%20NFL%20Week%2018%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
-# driver.get("file:///D:/PycharmProjects/NFLScraper/Wild%20Card%20-%20Seattle%20Seahawks%20at%20San%20Francisco%2049ers"
-#            "%20-%20January%2014th,%202023%20_%20Pro-Football-Reference.com.html")
-
-# Get all week links into a list weekLinks. List starts at index 1 to match week 1 link
-a = driver.page_source
-soup = BeautifulSoup(a, "html.parser")
-# Get all html within this id into weekLinks
-weekLinks = soup.findAll(id="div_week_games")[0]
-# Get all anchor tags into weekLinks
-weekLinks = weekLinks.findAll("a")
-# Change from anchor tags to actual links in weekLinks
-for i in range(len(weekLinks)):
-    weekLinks[i] = weekLinks[i].get("href")
-# Insert a "" at index 0 so that index 1 will match week 1
-weekLinks.insert(0, "")
-for i in range(1, len(weekLinks)):
-    print(i, ": ", weekLinks[i])
-print(weekLinks)
 
 # for week in range(1, len(weekLinks)-1):
 #     driver.get(weekLinks[week])
