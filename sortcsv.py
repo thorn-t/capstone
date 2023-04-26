@@ -12,27 +12,27 @@ def calculateAverages(df, real):
     tgtAvg = (df[:, 0] + df[:, 5]) / 2
     #print("Avg: ", tgtAvg, " Real: ", real[:, 0])
     #print("TGT AVG SHAPE: ", tgtAvg.shape, " REAL SHAPE: ", real[:, 0].shape)
-    print("Mean absolute error tgt AVGS: ", mean_absolute_error(tgtAvg, real[:, 0]))
+    print("Mean absolute error tgt AVGS: ", round(mean_absolute_error(tgtAvg, real[:, 0]), 2))
 
     recAvg = (df[:, 1] + df[:, 6]) / 2
     #print("Avg: ", recAvg, " Real: ", real[:, 1])
     #print("REC AVG SHAPE: ", recAvg.shape, " REAL SHAPE: ", real[:, 1].shape)
-    print("Mean absolute error rec AVGS: ", mean_absolute_error(tgtAvg, real[:, 1]))
+    print("Mean absolute error rec AVGS: ", round(mean_absolute_error(tgtAvg, real[:, 1]), 2))
 
     recYdsAvg = (df[:, 2] + df[:, 7]) / 2
     #print("Avg: ", recYdsAvg, " Real: ", real[:, 2])
     #print("RECYDS AVG SHAPE: ", recYdsAvg.shape, " REAL SHAPE: ", real[:, 2].shape)
-    print("Mean absolute error recyds AVGS: ", mean_absolute_error(tgtAvg, real[:, 2]))
+    print("Mean absolute error recyds AVGS: ", round(mean_absolute_error(tgtAvg, real[:, 2]), 2))
 
     snapAvg = (df[:, 3] + df[:, 8]) / 2
     # print("Avg: ", snapAvg, " Real: ", real[:, 3])
     # print("Snap% AVG SHAPE: ", snapAvg.shape, " REAL SHAPE: ", real[:, 3].shape)
-    print("Mean absolute error snap AVGS: ", mean_absolute_error(snapAvg, real[:, 3]))
+    print("Mean absolute error snap AVGS: ", round(mean_absolute_error(snapAvg, real[:, 3]), 2))
 
     tdAvg = (df[:, 4] + df[:, 9]) / 2
     #print("Avg: ", tdAvg, " Real: ", real[:, 4])
     # print("td AVG SHAPE: ", tdAvg.shape, " REAL SHAPE: ", real[:, 4].shape)
-    print("Mean absolute error td AVGS: ", mean_absolute_error(tdAvg, real[:, 4]))
+    print("Mean absolute error td AVGS: ", round(mean_absolute_error(tdAvg, real[:, 4]), 2))
     # dataInput = sortedPlayerDf[:,0:10]
     # dataOutput = sortedPlayerDf[:,10:]
     # print("Data shapes:", dataInput.shape, dataOutput.shape)
@@ -42,6 +42,22 @@ def calculateAverages(df, real):
     #
     # comparePred = np.concatenate((dataOutput, pred), axis=1)
     # print("Comparepred: ", comparePred.shape)
+
+def displayMAE(predicted, real):
+    x, y = predicted[:, 0], real[:, 0]
+    print("Mean absolute error tgt: ", round(mean_absolute_error(x, y), 2))
+
+    x, y = predicted[:, 1], real[:, 1]
+    print("Mean absolute error rec: ", round(mean_absolute_error(x, y), 2))
+
+    x, y = predicted[:, 2], real[:, 2]
+    print("Mean absolute error recyds: ", round(mean_absolute_error(x, y), 2))
+
+    x, y = predicted[:, 3], real[:, 3]
+    print("Mean absolute error snap: ", round(mean_absolute_error(x, y), 2))
+
+    x, y = predicted[:, 4], real[:, 4]
+    print("Mean absolute error td: ", round(mean_absolute_error(x, y), 2))
 
 
 def main():
@@ -61,6 +77,10 @@ def main():
     finalWeekDf = pd.DataFrame(columns=['Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD',
                                         'Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD',
                                         'Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD'])
+
+    finalWeekDf2 = pd.DataFrame(columns=['Player', 'Week', 'Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD',
+                                            'Player', 'Week', 'Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD',
+                                            'Player', 'Week', 'Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD'])
     # Linear regression model
     model = LinearRegression()
 
@@ -112,10 +132,12 @@ def main():
                 sortedPlayerDf2.loc[len(sortedPlayerDf2)] = npArr2
             else:
                 # Append to finalWeekDf
-                finalWeekDf.loc[len(sortedPlayerDf)] = npArr
+                finalWeekDf.loc[len(finalWeekDf)] = npArr
+                finalWeekDf2.loc[len(finalWeekDf2)] = npArr2
 
 
     sortedPlayerDf = sortedPlayerDf.to_numpy()
+
     #print("sortedplayerdf2: ", sortedPlayerDf2.shape)
     dataInput = sortedPlayerDf[:,0:10]
     dataOutput = sortedPlayerDf[:,10:]
@@ -126,23 +148,31 @@ def main():
     reg = model.fit(dataInput, dataOutput)
     pred = reg.predict(dataInput)
 
+
+
     comparePred = np.concatenate((dataOutput, pred), axis=1)
-    #print("Comparepred: ", comparePred.shape)
+    #print("Comparepred: ", comparePred.shape, sortedPlayerDf2.shape)
+    pred = np.rint(pred)
+    columns = ['pTgt', 'pRec', 'pRecYds', 'pSnap%', 'pTds']
+    predDf = pd.DataFrame(pred, columns=columns)
+    sortedPlayerDf2 = pd.concat([sortedPlayerDf2, predDf], axis=1)
+
     print("Training DF")
-    x, y = pred[:, 0], dataOutput[:, 0]
-    print("Mean absolute error tgt: ", mean_absolute_error(x, y))
-
-    x, y = pred[:, 1], dataOutput[:, 1]
-    print("Mean absolute error rec: ", mean_absolute_error(x, y))
-
-    x, y = pred[:, 2], dataOutput[:, 2]
-    print("Mean absolute error recyds: ", mean_absolute_error(x, y))
-
-    x, y = pred[:, 3], dataOutput[:, 3]
-    print("Mean absolute error snap: ", mean_absolute_error(x, y))
-
-    x, y = pred[:, 4], dataOutput[:, 4]
-    print("Mean absolute error td: ", mean_absolute_error(x, y))
+    displayMAE(pred, dataOutput)
+    # x, y = pred[:, 0], dataOutput[:, 0]
+    # print("Mean absolute error tgt: ", mean_absolute_error(x, y))
+    #
+    # x, y = pred[:, 1], dataOutput[:, 1]
+    # print("Mean absolute error rec: ", mean_absolute_error(x, y))
+    #
+    # x, y = pred[:, 2], dataOutput[:, 2]
+    # print("Mean absolute error recyds: ", mean_absolute_error(x, y))
+    #
+    # x, y = pred[:, 3], dataOutput[:, 3]
+    # print("Mean absolute error snap: ", mean_absolute_error(x, y))
+    #
+    # x, y = pred[:, 4], dataOutput[:, 4]
+    # print("Mean absolute error td: ", mean_absolute_error(x, y))
 
     # turn the 2d array that is pred [[pred]] to a 1d array [pred]
     #predList = np.ravel(np.around(pred, 2))
@@ -168,26 +198,31 @@ def main():
     print("Testing DF")
     compareFinal = np.concatenate((finalOutput, finalPred), axis=1)
 
+    finalPred = np.rint(finalPred)
+    columns = ['pTgt', 'pRec', 'pRecYds', 'pSnap%', 'pTds']
+    finalPredDf = pd.DataFrame(finalPred, columns=columns)
+    finalWeekDf2 = pd.concat([finalWeekDf2, finalPredDf], axis=1)
+
     np.savetxt("finalOutput.csv", finalOutput, delimiter=",", fmt='%f')
     np.savetxt("finalPred.csv", finalPred, delimiter=",", fmt='%f')
-
-    x, y = finalPred[:, 0], finalOutput[:, 0]
-    print("Mean absolute error tgt: ",mean_absolute_error(x, y))
-
-    x, y = finalPred[:, 1], finalOutput[:, 1]
-    print("Mean absolute error rec: ", mean_absolute_error(x, y))
-
-    x, y = finalPred[:, 2], finalOutput[:, 2]
-    print("Mean absolute error recyds: ", mean_absolute_error(x, y))
-
-    x, y = finalPred[:, 3], finalOutput[:, 3]
-    print("Mean absolute error snap: ", mean_absolute_error(x, y))
-
-    x, y = finalPred[:, 4], finalOutput[:, 4]
-    print("Mean absolute error td: ", mean_absolute_error(x, y))
+    displayMAE(finalPred, finalOutput)
+    # x, y = finalPred[:, 0], finalOutput[:, 0]
+    # print("Mean absolute error tgt: ",mean_absolute_error(x, y))
+    #
+    # x, y = finalPred[:, 1], finalOutput[:, 1]
+    # print("Mean absolute error rec: ", mean_absolute_error(x, y))
+    #
+    # x, y = finalPred[:, 2], finalOutput[:, 2]
+    # print("Mean absolute error recyds: ", mean_absolute_error(x, y))
+    #
+    # x, y = finalPred[:, 3], finalOutput[:, 3]
+    # print("Mean absolute error snap: ", mean_absolute_error(x, y))
+    #
+    # x, y = finalPred[:, 4], finalOutput[:, 4]
+    # print("Mean absolute error td: ", mean_absolute_error(x, y))
 
     #print(compareFinal)
-    return sortedPlayerDf2
+    return finalWeekDf2
 
 
 
