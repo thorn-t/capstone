@@ -4,8 +4,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, r2_score
 import numpy as np
 import pandas as pd
+from datetime import date
 
-
+# calculateAverages gets passed a dataframe for df with the following columns
+# ['Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD', 'Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD']
+# and a df with the following columns for real ['Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD']
 def calculateAverages(df, real):
 
     #df2 = df[['Tgt', 'Rec', 'RecYds', 'Snap', 'RecTD']].mean()
@@ -43,6 +46,7 @@ def calculateAverages(df, real):
     # comparePred = np.concatenate((dataOutput, pred), axis=1)
     # print("Comparepred: ", comparePred.shape)
 
+# displayMAE takes a np array of 5 columns for pred and real and displays the mean absolute error to console.
 def displayMAE(predicted, real):
     x, y = predicted[:, 0], real[:, 0]
     print("Mean absolute error tgt: ", round(mean_absolute_error(x, y), 2))
@@ -59,7 +63,8 @@ def displayMAE(predicted, real):
     x, y = predicted[:, 4], real[:, 4]
     print("Mean absolute error td: ", round(mean_absolute_error(x, y), 2))
 
-
+# Main will return a dataframe containing the players performance the past 2 weeks, their performance a final third
+# week and their projected score for that final third week.
 def main():
     allPlayerData = pd.read_csv('Weeks 1-7 (2).csv')
     wrData = allPlayerData.loc[(allPlayerData['Pos'] == 'WR') & (allPlayerData["Snap"] > 15)]
@@ -159,21 +164,6 @@ def main():
 
     print("Training DF")
     displayMAE(pred, dataOutput)
-    # x, y = pred[:, 0], dataOutput[:, 0]
-    # print("Mean absolute error tgt: ", mean_absolute_error(x, y))
-    #
-    # x, y = pred[:, 1], dataOutput[:, 1]
-    # print("Mean absolute error rec: ", mean_absolute_error(x, y))
-    #
-    # x, y = pred[:, 2], dataOutput[:, 2]
-    # print("Mean absolute error recyds: ", mean_absolute_error(x, y))
-    #
-    # x, y = pred[:, 3], dataOutput[:, 3]
-    # print("Mean absolute error snap: ", mean_absolute_error(x, y))
-    #
-    # x, y = pred[:, 4], dataOutput[:, 4]
-    # print("Mean absolute error td: ", mean_absolute_error(x, y))
-
     # turn the 2d array that is pred [[pred]] to a 1d array [pred]
     #predList = np.ravel(np.around(pred, 2))
     # Add the player name a 0 for week to the front of the predList values so its "readable"
@@ -205,21 +195,10 @@ def main():
 
     np.savetxt("finalOutput.csv", finalOutput, delimiter=",", fmt='%f')
     np.savetxt("finalPred.csv", finalPred, delimiter=",", fmt='%f')
+    # outFile = f"NFLPred {date.today().strftime('%b-%d-%Y')}.csv"
+    outFile = f"NFLPred.csv"
+    finalWeekDf2.to_csv(outFile, encoding='utf-8', index=False)
     displayMAE(finalPred, finalOutput)
-    # x, y = finalPred[:, 0], finalOutput[:, 0]
-    # print("Mean absolute error tgt: ",mean_absolute_error(x, y))
-    #
-    # x, y = finalPred[:, 1], finalOutput[:, 1]
-    # print("Mean absolute error rec: ", mean_absolute_error(x, y))
-    #
-    # x, y = finalPred[:, 2], finalOutput[:, 2]
-    # print("Mean absolute error recyds: ", mean_absolute_error(x, y))
-    #
-    # x, y = finalPred[:, 3], finalOutput[:, 3]
-    # print("Mean absolute error snap: ", mean_absolute_error(x, y))
-    #
-    # x, y = finalPred[:, 4], finalOutput[:, 4]
-    # print("Mean absolute error td: ", mean_absolute_error(x, y))
 
     #print(compareFinal)
     return finalWeekDf2

@@ -2,26 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin</title>
+    <title>Teams</title>
 </head>
 <body>
-    <h1>Admin</h1>
     <a href="{{ url_for('home') }}">Home</a>
     <a href="{{ url_for('getAllPlayers') }}">All players</a>
     <a href="{{ url_for('getTeamPage') }}">Team select</a>
     <a href="{{ url_for('getAdminPage') }}">Admin</a>
-    <br>
-    <br>
+    <h1>Teams</h1>
 
     <form method="POST">
-        <input name="text" type="submit" value="Check for new data">
+        <select name="teamSelect">
+            {% for team in teams %}
+                <option value="{{team}}" SELECTED>{{team}}</option>"
+            {% endfor %}
+        </select>
+        <input name="selectButton" type="submit" value="Select">
     </form>
-
-    <form method="POST">
-        <input name="text" type="submit" value="Train with recent data">
-    </form>
-
-    <p>{{ptext}}</p>
 
 </body>
 </html>

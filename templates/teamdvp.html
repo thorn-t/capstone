@@ -2,14 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Team DvP</title>
 </head>
 <body>
-    <h1>Home</h1>
     <a href="{{ url_for('home') }}">Home</a>
     <a href="{{ url_for('getAllPlayers') }}">All players</a>
     <a href="{{ url_for('getTeamPage') }}">Team select</a>
     <a href="{{ url_for('getAdminPage') }}">Admin</a>
-
+    <h1>Team DVP</h1>
+    <!--  This is the selected teams' name  -->
+    <p>{{ teamName }}</p>
+    <!--    This is the teamData df -->
+    {{teamData}}
 </body>
 </html>
