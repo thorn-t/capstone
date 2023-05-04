@@ -12,12 +12,15 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import requests
 from webdriver_manager.chrome import ChromeDriverManager
+import os
 
-chrome_driver_path = "D:\ChromeDriver\chromedriver.exe"
+#chrome_driver_path = "D:\ChromeDriver\chromedriver.exe"
 options = webdriver.ChromeOptions()
 options.headless = True
-service = Service(executable_path=chrome_driver_path)
-driver = webdriver.Chrome(service=service, options=options)
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+#service = Service(executable_path=chrome_driver_path)
+#driver = webdriver.Chrome(service=service, options=options)
 
 
 # driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -29,11 +32,19 @@ driver = webdriver.Chrome(service=service, options=options)
 def getWeekLinks():
     # Navigate to score page
     # driver.get("file:///D:/PycharmProjects/NFLScraper/2022%20NFL%20Week%2019%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
+    cwd = os.getcwd()
+    driver.get(f"{cwd}/2022%20NFL%20Week%2018%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
     #driver.get(
     #    "file:///D:/PycharmProjects/NFLScraper/2022%20NFL%20Week%2018%20Leaders%20&%20Scores%20_%20Pro-Football-Reference.com.html")
-    driver.get("https://www.pro-football-reference.com/years/2022/week_1.htm")
+    #driver.get("https://www.pro-football-reference.com/years/2022/week_22.htm")
     # driver.get("file:///D:/PycharmProjects/NFLScraper/Wild%20Card%20-%20Seattle%20Seahawks%20at%20San%20Francisco%2049ers"
     #            "%20-%20January%2014th,%202023%20_%20Pro-Football-Reference.com.html")
+
+
+    # Adjust the headers
+    # write sentence in report in future work about live website not working
+    # have the data committed (html file)
+    # SVR in scikit learn
 
     # Get all week links into a list weekLinks. List starts at index 1 to match week 1 link
     a = driver.page_source

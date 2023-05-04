@@ -158,7 +158,7 @@ def main():
     comparePred = np.concatenate((dataOutput, pred), axis=1)
     #print("Comparepred: ", comparePred.shape, sortedPlayerDf2.shape)
     pred = np.rint(pred)
-    columns = ['pTgt', 'pRec', 'pRecYds', 'pSnap%', 'pTds']
+    columns = ['Pred Targets', 'Pred Receptions', 'Pred Receiving Yards', 'Pred Snap%', 'Pred Tds']
     predDf = pd.DataFrame(pred, columns=columns)
     sortedPlayerDf2 = pd.concat([sortedPlayerDf2, predDf], axis=1)
 
@@ -189,7 +189,7 @@ def main():
     compareFinal = np.concatenate((finalOutput, finalPred), axis=1)
 
     finalPred = np.rint(finalPred)
-    columns = ['pTgt', 'pRec', 'pRecYds', 'pSnap%', 'pTds']
+    columns = ['Pred Targets', 'Pred Receptions', 'Pred Receiving Yards', 'Pred Snap%', 'Pred Tds']
     finalPredDf = pd.DataFrame(finalPred, columns=columns)
     finalWeekDf2 = pd.concat([finalWeekDf2, finalPredDf], axis=1)
 

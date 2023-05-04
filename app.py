@@ -23,6 +23,35 @@ def home():
 def getAllPlayers():
     # df is the flattened df from sortcsv
     df = pd.read_csv('NFLPred.csv')
+    print(df.columns)
+    df = df.drop(["Player.1", "Player.2"], axis=1)
+    # create a dictionary
+    # key = old name
+    # value = new name
+    dict = {'Week': 'Week 0',
+            'Tgt': 'Targets 0',
+            'Rec': 'Rec 0',
+            'RecYds': 'RecYds 0',
+            'Snap': 'Snap 0',
+            'RecTD': 'RecTD 0',
+            'Week.1': 'Week 1',
+            'Tgt.1': 'Tgt 1',
+            'Rec.1': 'Rec 1',
+            'RecYds.1': 'RecYds 1',
+            'Snap.1': 'Snap 1',
+            'RecTD.1': 'RecTD 1',
+            'Week.2': 'Week 2',
+            'Tgt.2': 'Tgt 2',
+            'Rec.2': 'Rec 2',
+            'RecYds.2': 'RecYds 2',
+            'Snap.2': 'Snap 2',
+            'RecTD.2': 'RecTD 2',
+            }
+
+    # call rename () method
+    df.rename(columns=dict,
+              inplace=True)
+
     # dfHtml is df in a safe html form so jinja will render it
     dfHtml = Markup(df.to_html())
     return render_template("allplayers.html", dfHtml=dfHtml)
